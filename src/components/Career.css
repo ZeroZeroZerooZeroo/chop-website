@@ -1,0 +1,156 @@
+.career-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+
+.vacancies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vacancy-item {
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.vacancy-item.active {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.vacancy-header {
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.vacancy-header:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.vacancy-title h4 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.vacancy-meta {
+  display: flex;
+  gap: 20px;
+}
+
+.vacancy-toggle {
+  font-size: 1.5rem;
+  font-weight: 300;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.vacancy-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s ease;
+  padding: 0 25px;
+}
+
+.vacancy-details.visible {
+  max-height: 800px;
+  padding: 0 25px 25px;
+}
+
+.requirements,
+.conditions {
+  margin-bottom: 20px;
+}
+
+.requirements h5,
+.conditions h5 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.requirements ul,
+.conditions ul {
+  padding-left: 20px;
+}
+
+.requirements li,
+.conditions li {
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.benefit-item {
+  padding: 25px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.benefit-item:hover {
+  transform: translateY(-5px);
+}
+
+.benefit-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin: 0 auto 15px;
+}
+
+.benefit-item h4 {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.benefit-item p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 968px) {
+  .career-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .vacancy-meta {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vacancy-header {
+    padding: 20px;
+  }
+  
+  .vacancy-details.visible {
+    padding: 0 20px 20px;
+  }
+}

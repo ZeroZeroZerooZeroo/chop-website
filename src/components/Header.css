@@ -14,8 +14,26 @@
   padding: 15px 0;
 }
 
-.logo h2 {
-  font-weight: 700;
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-container {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.logo-container:hover {
+  opacity: 0.8;
+}
+
+.logo-image {
+  height: 40px; /* Настройте под размер вашего логотипа */
+  width: auto;
+  object-fit: contain;
 }
 
 .nav {
@@ -94,4 +112,13 @@
   .phone-link {
     font-size: 0.9rem;
   }
+
+  .logo-image {
+    height: 45px; /* Чуть меньше на мобильных */
+  }
+}
+.logo {
+  display: flex;
+  align-items: center;
+  margin-left: 50px; /* Настройте это значение по необходимости */
 }

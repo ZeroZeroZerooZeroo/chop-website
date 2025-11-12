@@ -3,10 +3,10 @@ import './About.css';
 
 const About = ({ theme }) => {
   const stats = [
-    { number: '15+', label: 'Лет опыта' },
-    { number: '500+', label: 'Клиентов' },
-    { number: '24/7', label: 'Режим работы' },
-    { number: '100+', label: 'Сотрудников' }
+    { number: '10+', label: 'Лет опыта' },
+    { number: '24/7', label: 'Диспетчерская' },
+    { number: '3-7', label: 'Минут реагирования' },
+    { number: '100%', label: 'Лицензия МВД' }
   ];
 
   return (
@@ -14,35 +14,32 @@ const About = ({ theme }) => {
       <div className="container">
         <div className="about-content">
           <div className="about-text">
-            <h2 className="section-title" style={{ color: theme.primary }}>О нашей компании</h2>
-            <p style={{ color: theme.text, marginBottom: '20px' }}>
-              <strong>СпецОхрана</strong> - ведущее частное охранное предприятие, 
-              предоставляющее полный комплекс услуг по обеспечению безопасности 
-              с 2008 года.
-            </p>
-            <p style={{ color: theme.text, marginBottom: '30px' }}>
-              Наша команда состоит из высококвалифицированных специалистов 
-              с многолетним опытом работы в силовых структурах. Мы используем 
-              современное оборудование и передовые технологии для обеспечения 
-              максимальной защиты наших клиентов.
-            </p>
+            <h2 className="section-title" style={{ color: theme.primary }}>Почему выбирают нас</h2>
             
             <div className="advantages">
               <div className="advantage">
                 <span style={{ color: theme.accent }}>✓</span>
-                Лицензированная деятельность
+                Лицензия МВД
               </div>
               <div className="advantage">
                 <span style={{ color: theme.accent }}>✓</span>
-                Современное оборудование
+                Круглосуточная диспетчерская
               </div>
               <div className="advantage">
                 <span style={{ color: theme.accent }}>✓</span>
-                Круглосуточный мониторинг
+                Опыт более 10 лет
               </div>
               <div className="advantage">
                 <span style={{ color: theme.accent }}>✓</span>
-                Индивидуальный подход
+                Обученный персонал
+              </div>
+              <div className="advantage">
+                <span style={{ color: theme.accent }}>✓</span>
+                GPS-контроль постов
+              </div>
+              <div className="advantage">
+                <span style={{ color: theme.accent }}>✓</span>
+                Гарантия реагирования 3–7 минут
               </div>
             </div>
           </div>
