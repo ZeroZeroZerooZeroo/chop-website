@@ -3,26 +3,29 @@ import './Career.css';
 
 const Career = ({ theme }) => {
   const [activeVacancy, setActiveVacancy] = useState(null);
-  const [vacancies, setVacancies] = useState([]);
+  const [vacancies, setVacancies] = useState([]); // всегда массив по умолчанию
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Функция загрузки вакансий
   const fetchVacancies = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://your-api.com/api/vacancies'); // Ваш API endpoint
+      const response = await fetch('http://localhost:8080/api/vacancies?active=true');
       
       if (!response.ok) {
         throw new Error('Ошибка загрузки вакансий');
       }
       
       const data = await response.json();
-      setVacancies(data);
+      // ВАЖНО: гарантируем что vacancies всегда массив
+      const safeData = Array.isArray(data) ? data : [];
+      setVacancies(safeData);
       setError(null);
     } catch (err) {
       setError('Не удалось загрузить вакансии');
       console.error('Error fetching vacancies:', err);
+      // При ошибке тоже устанавливаем пустой массив
+      setVacancies([]);
     } finally {
       setLoading(false);
     }
@@ -31,12 +34,6 @@ const Career = ({ theme }) => {
   // Загружаем вакансии при монтировании компонента
   useEffect(() => {
     fetchVacancies();
-  }, []);
-
-  // Опционально: обновление вакансий в реальном времени
-  useEffect(() => {
-    const interval = setInterval(fetchVacancies, 30000); // Обновление каждые 30 секунд
-    return () => clearInterval(interval);
   }, []);
 
   const toggleVacancy = (id) => {
@@ -99,6 +96,9 @@ const Career = ({ theme }) => {
     );
   }
 
+  // ВАЖНО: vacancies всегда массив, но на всякий случай проверяем
+  const safeVacancies = Array.isArray(vacancies) ? vacancies : [];
+
   return (
     <section id="career" className="section career" style={{ backgroundColor: theme.background }}>
       <div className="container">
@@ -127,7 +127,7 @@ const Career = ({ theme }) => {
               </button>
             </div>
             
-            {vacancies.length === 0 ? (
+            {safeVacancies.length === 0 ? (
               <div style={{ 
                 textAlign: 'center', 
                 padding: '40px', 
@@ -138,7 +138,7 @@ const Career = ({ theme }) => {
                 На данный момент открытых вакансий нет
               </div>
             ) : (
-              vacancies.map(vacancy => (
+              safeVacancies.map(vacancy => (
                 <div 
                   key={vacancy.id} 
                   className={`vacancy-item ${activeVacancy === vacancy.id ? 'active' : ''}`}
@@ -164,7 +164,7 @@ const Career = ({ theme }) => {
                     <div className="requirements">
                       <h5 style={{ color: theme.primary }}>Требования:</h5>
                       <ul style={{ color: theme.text }}>
-                        {vacancy.requirements.map((req, index) => (
+                        {vacancy.requirements && vacancy.requirements.map((req, index) => (
                           <li key={index}>{req}</li>
                         ))}
                       </ul>
@@ -173,7 +173,7 @@ const Career = ({ theme }) => {
                     <div className="conditions">
                       <h5 style={{ color: theme.primary }}>Условия:</h5>
                       <ul style={{ color: theme.text }}>
-                        {vacancy.conditions.map((cond, index) => (
+                        {vacancy.conditions && vacancy.conditions.map((cond, index) => (
                           <li key={index}>{cond}</li>
                         ))}
                       </ul>
