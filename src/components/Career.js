@@ -1,68 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Career.css';
 
 const Career = ({ theme }) => {
   const [activeVacancy, setActiveVacancy] = useState(null);
+  const [vacancies, setVacancies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const vacancies = [
-    {
-      id: 1,
-      title: 'Охранник',
-      salary: 'от 35 000 ₽',
-      schedule: 'Сменный график',
-      requirements: [
-        'Наличие действующей лицензии частного охранника',
-        'Опыт работы от 1 года',
-        'Физическая подготовка',
-        'Отсутствие судимости'
-      ],
-      conditions: [
-        'Официальное трудоустройство',
-        'Сменный график работы',
-        'Обучение за счет компании',
-        'Карьерный рост',
-        'Социальный пакет'
-      ]
-    },
-    {
-      id: 2,
-      title: 'Старший смены',
-      salary: 'от 45 000 ₽',
-      schedule: 'Сменный график',
-      requirements: [
-        'Лицензия частного охранника 4-6 разряда',
-        'Опыт работы от 3 лет',
-        'Навыки руководства коллективом',
-        'Знание документации по охране'
-      ],
-      conditions: [
-        'Официальное трудоустройство',
-        'Премии по результатам работы',
-        'Обучение и повышение квалификации',
-        'Ответственность за смену',
-        'Социальный пакет + ДМС'
-      ]
-    },
-    {
-      id: 3,
-      title: 'Оператор пульта охраны',
-      salary: 'от 40 000 ₽',
-      schedule: 'Суточные смены',
-      requirements: [
-        'Опыт работы оператором от 1 года',
-        'Умение работать с системами видеонаблюдения',
-        'Внимательность, стрессоустойчивость',
-        'Грамотная речь'
-      ],
-      conditions: [
-        'Работа в современном диспетчерском центре',
-        'Суточные смены с последующим отдыхом',
-        'Обучение работе с оборудованием',
-        'Стабильный график',
-        'Социальный пакет'
-      ]
+  // Функция загрузки вакансий
+  const fetchVacancies = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('https://your-api.com/api/vacancies'); // Ваш API endpoint
+      
+      if (!response.ok) {
+        throw new Error('Ошибка загрузки вакансий');
+      }
+      
+      const data = await response.json();
+      setVacancies(data);
+      setError(null);
+    } catch (err) {
+      setError('Не удалось загрузить вакансии');
+      console.error('Error fetching vacancies:', err);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  // Загружаем вакансии при монтировании компонента
+  useEffect(() => {
+    fetchVacancies();
+  }, []);
+
+  // Опционально: обновление вакансий в реальном времени
+  useEffect(() => {
+    const interval = setInterval(fetchVacancies, 30000); // Обновление каждые 30 секунд
+    return () => clearInterval(interval);
+  }, []);
 
   const toggleVacancy = (id) => {
     setActiveVacancy(activeVacancy === id ? null : id);
@@ -72,14 +47,57 @@ const Career = ({ theme }) => {
     document.getElementById('contact').scrollIntoView({ 
       behavior: 'smooth' 
     });
-    // Можно добавить автоматическое заполнение вакансии в форме
+    
     setTimeout(() => {
       const messageField = document.querySelector('textarea[name="message"]');
       if (messageField) {
         messageField.value = `Интересует вакансия: ${vacancyTitle}`;
+        messageField.focus();
       }
     }, 500);
   };
+
+  // Если загрузка
+  if (loading) {
+    return (
+      <section id="career" className="section career" style={{ backgroundColor: theme.background }}>
+        <div className="container">
+          <h2 className="section-title" style={{ color: theme.primary }}>Карьера в СОВА-22</h2>
+          <div className="loading" style={{ textAlign: 'center', padding: '40px', color: theme.text }}>
+            Загрузка вакансий...
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Если ошибка
+  if (error) {
+    return (
+      <section id="career" className="section career" style={{ backgroundColor: theme.background }}>
+        <div className="container">
+          <h2 className="section-title" style={{ color: theme.primary }}>Карьера в СОВА-22</h2>
+          <div className="error" style={{ textAlign: 'center', padding: '40px', color: theme.text }}>
+            {error}
+            <button 
+              onClick={fetchVacancies}
+              style={{ 
+                marginTop: '20px',
+                padding: '10px 20px',
+                backgroundColor: theme.accent,
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer'
+              }}
+            >
+              Попробовать снова
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="career" className="section career" style={{ backgroundColor: theme.background }}>
@@ -91,58 +109,87 @@ const Career = ({ theme }) => {
         
         <div className="career-content">
           <div className="vacancies-list">
-            <h3 style={{ color: theme.primary, marginBottom: '30px' }}>Открытые вакансии</h3>
-            {vacancies.map(vacancy => (
-              <div 
-                key={vacancy.id} 
-                className={`vacancy-item ${activeVacancy === vacancy.id ? 'active' : ''}`}
-                style={{ backgroundColor: theme.cardBackground }}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+              <h3 style={{ color: theme.primary, margin: 0 }}>Открытые вакансии</h3>
+              <button 
+                onClick={fetchVacancies}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'transparent',
+                  color: theme.accent,
+                  border: `1px solid ${theme.accent}`,
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem'
+                }}
               >
+                Обновить
+              </button>
+            </div>
+            
+            {vacancies.length === 0 ? (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '40px', 
+                color: theme.text,
+                backgroundColor: theme.cardBackground,
+                borderRadius: '10px'
+              }}>
+                На данный момент открытых вакансий нет
+              </div>
+            ) : (
+              vacancies.map(vacancy => (
                 <div 
-                  className="vacancy-header"
-                  onClick={() => toggleVacancy(vacancy.id)}
+                  key={vacancy.id} 
+                  className={`vacancy-item ${activeVacancy === vacancy.id ? 'active' : ''}`}
+                  style={{ backgroundColor: theme.cardBackground }}
                 >
-                  <div className="vacancy-title">
-                    <h4 style={{ color: theme.primary }}>{vacancy.title}</h4>
-                    <div className="vacancy-meta">
-                      <span style={{ color: theme.accent, fontWeight: '600' }}>{vacancy.salary}</span>
-                      <span style={{ color: theme.text }}>{vacancy.schedule}</span>
+                  <div 
+                    className="vacancy-header"
+                    onClick={() => toggleVacancy(vacancy.id)}
+                  >
+                    <div className="vacancy-title">
+                      <h4 style={{ color: theme.primary }}>{vacancy.title}</h4>
+                      <div className="vacancy-meta">
+                        <span style={{ color: theme.accent, fontWeight: '600' }}>{vacancy.salary}</span>
+                        <span style={{ color: theme.text }}>{vacancy.schedule}</span>
+                      </div>
+                    </div>
+                    <div className="vacancy-toggle">
+                      {activeVacancy === vacancy.id ? '−' : '+'}
                     </div>
                   </div>
-                  <div className="vacancy-toggle">
-                    {activeVacancy === vacancy.id ? '−' : '+'}
+                  
+                  <div className={`vacancy-details ${activeVacancy === vacancy.id ? 'visible' : ''}`}>
+                    <div className="requirements">
+                      <h5 style={{ color: theme.primary }}>Требования:</h5>
+                      <ul style={{ color: theme.text }}>
+                        {vacancy.requirements.map((req, index) => (
+                          <li key={index}>{req}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div className="conditions">
+                      <h5 style={{ color: theme.primary }}>Условия:</h5>
+                      <ul style={{ color: theme.text }}>
+                        {vacancy.conditions.map((cond, index) => (
+                          <li key={index}>{cond}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <button 
+                      className="btn btn-primary"
+                      style={{ backgroundColor: theme.accent }}
+                      onClick={() => handleApply(vacancy.title)}
+                    >
+                      Откликнуться на вакансию
+                    </button>
                   </div>
                 </div>
-                
-                <div className={`vacancy-details ${activeVacancy === vacancy.id ? 'visible' : ''}`}>
-                  <div className="requirements">
-                    <h5 style={{ color: theme.primary }}>Требования:</h5>
-                    <ul style={{ color: theme.text }}>
-                      {vacancy.requirements.map((req, index) => (
-                        <li key={index}>{req}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div className="conditions">
-                    <h5 style={{ color: theme.primary }}>Условия:</h5>
-                    <ul style={{ color: theme.text }}>
-                      {vacancy.conditions.map((cond, index) => (
-                        <li key={index}>{cond}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <button 
-                    className="btn btn-primary"
-                    style={{ backgroundColor: theme.accent }}
-                    onClick={() => handleApply(vacancy.title)}
-                  >
-                    Откликнуться на вакансию
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
           
           <div className="career-benefits">

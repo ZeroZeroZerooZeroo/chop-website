@@ -24,12 +24,27 @@ const Contact = ({ theme }) => {
     setIsSubmitting(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Данные формы:', formData);
+      
+      const response = await fetch('http://localhost:8080/api/applications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Заявка создана:', result);
+      
       setSubmitMessage('success');
       setFormData({ name: '', phone: '', service: '', message: '' });
       setTimeout(() => setSubmitMessage(''), 5000);
     } catch (error) {
+      console.error('Ошибка отправки:', error);
       setSubmitMessage('error');
     } finally {
       setIsSubmitting(false);
@@ -37,15 +52,17 @@ const Contact = ({ theme }) => {
   };
 
   const handlePhoneClick = () => {
-    window.location.href = 'tel:+73852123456';
+    window.location.href = 'tel:+73852601460';
   };
 
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/79601234567', '_blank');
+    const message = encodeURIComponent('Здравствуйте! Хочу узнать о ваших услугах охраны.');
+    window.open(`https://wa.me/79601234567?text=${message}`, '_blank');
   };
 
   const handleTelegramClick = () => {
-    window.open('https://t.me/sova22_barnaul', '_blank');
+    const message = encodeURIComponent('Здравствуйте! Хочу узнать о ваших услугах охраны.');
+    window.open(`https://t.me/sova22_barnaul?text=${message}`, '_blank');
   };
 
   return (
@@ -188,13 +205,14 @@ const Contact = ({ theme }) => {
                     name="service"
                     value={formData.service}
                     onChange={handleChange}
+                    required
                     style={{
                       borderColor: theme.primary + '40',
                       color: theme.text,
                       backgroundColor: theme.background
                     }}
                   >
-                    <option value="">Выберите услугу</option>
+                    <option value="">Выберите услугу *</option>
                     <option value="physical-security">Физическая охрана объектов</option>
                     <option value="remote-security">Пультовая охрана</option>
                     <option value="security-systems">Установка систем безопасности</option>
